@@ -13,52 +13,166 @@ import datetime
 import numpy as np
 
 
-H = [[1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
-     [1 0 0 0 0 0 0 0 0]
+H = np.array([[ 1.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.],
+       [ 0.,  1.,  0.,  0.,  0.,  0.,  0.,  0.,  0.],
+       [-1.,  0.,  1.,  0.,  0.,  0.,  0.,  0.,  0.],
+       [ 0., -1.,  0.,  0.,  0.,  0.,  0.,  0.,  0.],
+       [ 0.,  0., -1.,  0.,  0.,  0.,  0.,  0.,  0.],
+       [ 1.,  0.,  0.,  1.,  0.,  0.,  0.,  0.,  0.],
+       [ 0.,  1.,  0.,  0.,  1.,  0.,  0.,  0.,  0.],
+       [-1.,  0.,  1., -1.,  0.,  1.,  0.,  0.,  0.],
+       [ 0., -1.,  0.,  0., -1.,  0.,  0.,  0.,  0.],
+       [ 0.,  0., -1.,  0.,  0., -1.,  0.,  0.,  0.],
+       [ 1.,  0.,  0.,  1.,  0.,  0.,  1.,  0.,  0.],
+       [ 0.,  1.,  0.,  0.,  1.,  0.,  0.,  1.,  0.],
+       [-1.,  0.,  1., -1.,  0.,  1., -1.,  0.,  1.],
+       [ 0., -1.,  0.,  0., -1.,  0.,  0., -1.,  0.],
+       [ 0.,  0., -1.,  0.,  0., -1.,  0.,  0., -1.],
+       [ 0.,  0.,  0.,  1.,  0.,  0.,  1.,  0.,  0.],
+       [ 0.,  0.,  0.,  0.,  1.,  0.,  0.,  1.,  0.],
+       [ 0.,  0.,  0., -1.,  0.,  1., -1.,  0.,  1.],
+       [ 0.,  0.,  0.,  0., -1.,  0.,  0., -1.,  0.],
+       [ 0.,  0.,  0.,  0.,  0., -1.,  0.,  0., -1.],
+       [ 0.,  0.,  0.,  0.,  0.,  0.,  1.,  0.,  0.],
+       [ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  1.,  0.],
+       [ 0.,  0.,  0.,  0.,  0.,  0., -1.,  0.,  1.],
+       [ 0.,  0.,  0.,  0.,  0.,  0.,  0., -1.,  0.],
+       [ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0., -1.]])
      
-     
-     
-     
-     
-     
-     
-     ]
 
-# Question 2a:
+# Question 2b:
 def conv2dmatrix(image, H):
     start_time = datetime.datetime.now()
     
-    convolution = H @ image
+    convolution = H @ image.flatten()
     stop_time = datetime.datetime.now()
     latency = stop_time - start_time
-    return 
+    convolution.reshape((5,5))
+    return convolution, latency
 
-
-    
-    
-    
-# Question 2b:
     
 # Question 2c:
+
+def convolve(image, kernel):
+    """Perform convolution using matrix multiplication."""
+    kernel_height, kernel_width = kernel.shape
+    image_height, image_width = image.shape
     
+    pad_h = kernel_height // 2
+    pad_w = kernel_width // 2
+    padded_image = np.pad(image, ((pad_h, pad_h), (pad_w, pad_w)), mode='constant', constant_values=0)
+    
+    output = np.zeros_like(image)
+    
+    for i in range(image_height):
+        for j in range(image_width):
+            region = padded_image[i:i+kernel_height, j:j+kernel_width]
+            output[i, j] = np.sum(region * kernel)
+    
+    return output
+
 # Question 2d:
+
+
+def gaussian_kernel(size, sigma=1):
+    """Generate a Gaussian kernel."""
+    ax = np.linspace(-(size // 2), size // 2, size)
+    xx, yy = np.meshgrid(ax, ax)
+    kernel = np.exp(-(xx**2 + yy**2) / (2 * sigma**2))
+    return kernel / np.sum(kernel)
+
+def sobel_filters(image):
+    """Apply Sobel filters to compute gradients."""
+    Kx = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+    Ky = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
+    
+    Gx = convolve(image, Kx)
+    Gy = convolve(image, Ky)
+    
+    magnitude = np.hypot(Gx, Gy)
+    magnitude = magnitude / magnitude.max() * 255
+    direction = np.arctan2(Gy, Gx)
+    
+    return magnitude, direction
+
+def non_maximum_suppression(gradient_magnitude, gradient_direction):
+    """Thin edges by suppressing non-maximum values."""
+    image_height, image_width = gradient_magnitude.shape
+    output = np.zeros_like(gradient_magnitude)
+    
+    angle = gradient_direction * 180.0 / np.pi
+    angle[angle < 0] += 180
+    
+    for i in range(1, image_height-1):
+        for j in range(1, image_width-1):
+            q, r = 255, 255
+            
+            if (0 <= angle[i, j] < 22.5) or (157.5 <= angle[i, j] <= 180):
+                q, r = gradient_magnitude[i, j+1], gradient_magnitude[i, j-1]
+            elif 22.5 <= angle[i, j] < 67.5:
+                q, r = gradient_magnitude[i-1, j+1], gradient_magnitude[i+1, j-1]
+            elif 67.5 <= angle[i, j] < 112.5:
+                q, r = gradient_magnitude[i-1, j], gradient_magnitude[i+1, j]
+            elif 112.5 <= angle[i, j] < 157.5:
+                q, r = gradient_magnitude[i+1, j+1], gradient_magnitude[i-1, j-1]
+            
+            if gradient_magnitude[i, j] >= q and gradient_magnitude[i, j] >= r:
+                output[i, j] = gradient_magnitude[i, j]
+            else:
+                output[i, j] = 0
+    
+    return output
+
+def threshold(image, low_threshold, high_threshold):
+    """Apply double thresholding."""
+    strong = 255
+    weak = 75
+    strong_i, strong_j = np.where(image >= high_threshold)
+    weak_i, weak_j = np.where((image >= low_threshold) & (image < high_threshold))
+    
+    output = np.zeros_like(image)
+    output[strong_i, strong_j] = strong
+    output[weak_i, weak_j] = weak
+    
+    return output, strong, weak
+
+def hysteresis(image, strong, weak):
+    """Apply hysteresis to finalize edges."""
+    image_height, image_width = image.shape
+    
+    for i in range(1, image_height-1):
+        for j in range(1, image_width-1):
+            if image[i, j] == weak:
+                if strong in [image[i+1, j-1], image[i+1, j], image[i+1, j+1], image[i, j-1], image[i, j+1], image[i-1, j-1], image[i-1, j], image[i-1, j+1]]:
+                    image[i, j] = strong
+                else:
+                    image[i, j] = 0
+    
+    return image
+
+def canny_edge_detector(image, low_threshold=50, high_threshold=100):
+    """Full Canny Edge Detection implementation."""
+    image = image.astype(np.float32) / 255.0
+    smoothed = convolve(image, gaussian_kernel(5, sigma=1))
+    magnitude, direction = sobel_filters(smoothed)
+    suppressed = non_maximum_suppression(magnitude, direction)
+    thresholded, strong, weak = threshold(suppressed, low_threshold, high_threshold)
+    final_edges = hysteresis(thresholded, strong, weak)
+    
+    return final_edges.astype(np.uint8)
+
+# Example usage:
+image = cv2.imread('Lionel_Messi.jpg', cv2.IMREAD_GRAYSCALE)
+edges = canny_edge_detector(image)
+
+plt.imshow(image)
+plt.axis("off")
+plt.show()
+
+cv_edges = cv2.Canny(image, 50, 100)
+
+plt.imshow(cv_edges)
+plt.axis("off")
+plt.show()
     
 # Question 2e:

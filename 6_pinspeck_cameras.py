@@ -16,7 +16,10 @@ cap = cv2.VideoCapture(video_path)
 
 ret, ref_frame = cap.read()
 ref = cv2.cvtColor(ref_frame, cv2.COLOR_BGR2RGB)
+
 plt.imshow(ref)
+plt.axis("off")
+plt.show()
 
 # Question 6c: Writing out the difference video
 # Convert reference frame to grayscale
