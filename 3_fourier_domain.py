@@ -297,7 +297,7 @@ def low_pass_filter_rgb(image, radius):
     
     return lpf
 
-lpf_horse1 = low_pass_filter_rgb(horse1, 30)
+lpf_horse1 = low_pass_filter_rgb(horse1, 20)
 
 # Displaying low pass filtered rgb image
 plt.imshow(lpf_horse1)
@@ -374,7 +374,7 @@ def high_pass_filter_rgb(image, radius):
     
     return hpf
 
-hpf_horse2 = high_pass_filter_rgb(horse2, 5)
+hpf_horse2 = high_pass_filter_rgb(horse2, 20)
 
 # Displaying low pass filtered rgb image
 plt.imshow(hpf_horse2)
@@ -383,5 +383,6 @@ plt.show()
 alpha = 0.5
 
 horse12 = alpha*lpf_horse1 + (1-alpha)*hpf_horse2
+horse12 = (horse12).astype(np.uint8)
 plt.imshow(horse12)
 plt.show()
