@@ -25,7 +25,12 @@ strawberry = cv2.cvtColor(strawberry, cv2.COLOR_BGR2RGB)
 strawberry = strawberry[:,362:]
 
 plt.imshow(strawberry)
+plt.axis("off")
+plt.show()
+
 plt.imshow(mango)
+plt.axis("off")
+plt.show()
 
 
 # Question 4b: Creating Gaussian/Laplacian pyramids
@@ -41,9 +46,14 @@ for i in range(4):
     mango_copy = cv2.resize(mango_copy, (y//2, x//2), fx=2, fy=2)
     
 
-plt.imshow(mango_residuals[3])
-plt.imshow(mango_copy)
+for mango_residual in mango_residuals:
+    plt.imshow(mango_residual)
+    plt.axis("off")
+    plt.show()
     
+plt.imshow(mango_copy)
+
+
 # Reconstructing the image from the Gaussian pyramids
 
 for i in range(4):
@@ -53,6 +63,8 @@ for i in range(4):
     mango_copy = mango_copy + mango_residuals[3-i]
     
 plt.imshow(mango_copy)
+plt.axis("off")
+plt.show()
 
 strawberry_copy = strawberry.copy()
 
@@ -63,13 +75,19 @@ strawberry_copy = strawberry.copy()
 x,y,_ = mango_copy.shape
 mask = np.zeros(mango_copy.shape)
 mask[:,:355] = 1
+
 plt.imshow(mask)
+plt.axis("off")
+plt.show()
    
-    
+   
 # Question 4d : Directly blending the image of the mango and strawberry
 
 direct_blend = (mask*mango + (1-mask)*strawberry).astype(np.uint8)
 plt.imshow(direct_blend)
+plt.axis("off")
+plt.show()
+
 print(strawberry.shape)
 
 
@@ -77,7 +95,10 @@ print(strawberry.shape)
 
 mask_filtered = cv2.GaussianBlur(mask, (101,101), 35)
 alpha_blend = (mask_filtered*mango + (1-mask_filtered)*strawberry).astype(np.uint8)
+
 plt.imshow(alpha_blend)
+plt.axis("off")
+plt.show()
 
 
 # Question 4f: Blending the image of the mango and strawberry using multiresolution
@@ -119,8 +140,8 @@ for i in range(4):
     image_blend = image_blend + blend_residuals[3-i]
 
 plt.imshow(image_blend)
-
-
+plt.axis("off")
+plt.show()
 
 
 
