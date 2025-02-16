@@ -53,6 +53,72 @@ def conv2dmatrix(image, H):
     
 # Question 2c:
 
+h = np.array([[1, 0, -1,],
+              [1, 0, -1,],
+              [1, 0, -1,]])
+
+print(f"kernel: {h}")  
+
+img = np.array([[1, 2, 3],
+              [4, 5, 6],
+              [7, 8, 9]])
+
+print(f"image: {img}")
+
+def compute_h_matrix(h, img):
+    img_rows, img_cols = img.shape
+    h_rows, h_cols = h.shape
+    conv_rows, conv_cols = h_rows + img_rows - 1, h_cols + img_cols - 1
+    #print(f"conv_rows, conv_cols: {conv_rows, conv_cols}")
+    
+    
+    h_matrix = np.zeros((conv_rows*conv_cols, img_rows*img_cols))
+    
+    X = np.zeros((conv_cols, img_cols))
+    X_stack = np.zeros((conv_cols, img_cols))
+    
+    for col in range(X.shape[1]):
+            X_stack[col:h_cols + col, col] = h[0]
+    '''
+    print(f"h[0]: {h[0]}")
+    print(f"X_stack: {X_stack}")
+    '''
+    for h_row in range(1, h_rows):
+        for col in range(X.shape[1]):
+            X[col:h_cols + col, col] = h[h_row]
+        X_stack = np.vstack((X_stack, X))
+    
+    #print(f"X_stack: {X_stack}")
+    
+    for img_row in range(img_rows):
+        h_matrix[conv_cols*img_row:X_stack.shape[0] + conv_cols*img_row,
+                 img_cols*img_row:X_stack.shape[1] + img_cols*img_row] = X_stack
+    
+    #print(f"h_matrix: {h_matrix}")
+    '''
+    img_vector = img.reshape(img_cols*img_rows)
+    print(f"image_vector: {img_vector}")
+    '''
+    return h_matrix
+
+h_matrix = compute_h_matrix(h, img)
+print(f"h_matrix: {h_matrix}")
+
+
+def convolve(h, img):
+    H = compute_h_matrix(h, img)
+    img_vector = img.reshape((img.shape[0]*img.shape[1]))
+    output_img = H @ img_vector
+    output_img = output_img.reshape((h.shape[0]+ img.shape[0]-1, 
+                                     h.shape[1]+ img.shape[1]-1))
+    return output_img
+
+output_img = convolve(h, img)
+print(f"output: {output_img}")
+print(f"output_shape: {output_img.shape}")
+
+
+'''
 def convolve(image, kernel):
     """Perform convolution using matrix multiplication."""
     kernel_height, kernel_width = kernel.shape
@@ -72,7 +138,7 @@ def convolve(image, kernel):
     return output
 
 # Question 2d:
-
+'''
 
 def gaussian_kernel(size, sigma=1):
     """Generate a Gaussian kernel."""
@@ -150,7 +216,7 @@ def hysteresis(image, strong, weak):
     
     return image
 
-def canny_edge_detector(image, low_threshold=50, high_threshold=100):
+def canny_edge_detector(image, low_threshold=1, high_threshold=20):
     """Full Canny Edge Detection implementation."""
     image = image.astype(np.float32) / 255.0
     smoothed = convolve(image, gaussian_kernel(5, sigma=1))
@@ -169,10 +235,15 @@ plt.imshow(image)
 plt.axis("off")
 plt.show()
 
+plt.imshow(edges)
+plt.axis("off")
+plt.show()
+
 cv_edges = cv2.Canny(image, 50, 100)
 
 plt.imshow(cv_edges)
 plt.axis("off")
 plt.show()
-    
+'''
+'''
 # Question 2e:

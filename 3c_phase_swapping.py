@@ -25,6 +25,8 @@ def read_and_display(path):
 woman1 = read_and_display(path_woman1)
 woman2 = read_and_display(path_woman2)
 
+# img is a single channel image
+# function returns the magnitude spectrum and the phase spectru
 def compute_dft_gray(img):        
 # converting image of woman 1 to frequency domain and plotting magnitude and phase
     dft = cv2.dft(np.float32(img), flags=cv2.DFT_COMPLEX_OUTPUT)
@@ -63,8 +65,6 @@ plt.imshow(woman1_magnitude)
 plt.show()
 
 '''
-
-
 
 
 def compute_idft_gray(magnitude, phase):
