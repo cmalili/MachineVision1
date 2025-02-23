@@ -98,7 +98,7 @@ strawberry_copy = strawberry.copy()
 # Creating a mango mask
 x,y,_ = mango.shape
 mask = np.zeros(mango.shape)
-mask[:,:355,:] = 1
+mask[:,:355] = 1
 '''
 plt.imshow(mask)
 plt.axis("off")
@@ -136,7 +136,7 @@ def computeGaussianPyramid(mask, levels):
     pyramid = [mask]
     for i in range(levels):
         mask = cv2.GaussianBlur(mask, kernel, sigma)
-        x, y, _ = mask.shape
+        x, y,_ = mask.shape
         mask = cv2.resize(mask, (y//2, x//2), fx=0.5, fy=0.5)
         pyramid.append(mask)
     return pyramid
