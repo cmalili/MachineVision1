@@ -118,28 +118,6 @@ print(f"output: {output_img}")
 print(f"output_shape: {output_img.shape}")
 
 
-'''
-def convolve(image, kernel):
-    """Perform convolution using matrix multiplication."""
-    kernel_height, kernel_width = kernel.shape
-    image_height, image_width = image.shape
-    
-    pad_h = kernel_height // 2
-    pad_w = kernel_width // 2
-    padded_image = np.pad(image, ((pad_h, pad_h), (pad_w, pad_w)), mode='constant', constant_values=0)
-    
-    output = np.zeros_like(image)
-    
-    for i in range(image_height):
-        for j in range(image_width):
-            region = padded_image[i:i+kernel_height, j:j+kernel_width]
-            output[i, j] = np.sum(region * kernel)
-    
-    return output
-
-# Question 2d:
-'''
-
 def gaussian_kernel(size, sigma=1):
     """Generate a Gaussian kernel."""
     ax = np.linspace(-(size // 2), size // 2, size)

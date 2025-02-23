@@ -23,7 +23,7 @@ mango = mango[:720,:800]
 strawberry = cv2.imread(path_strawberry)
 strawberry = cv2.cvtColor(strawberry, cv2.COLOR_BGR2RGB)
 strawberry = strawberry[:,362:]
-
+'''
 plt.imshow(strawberry)
 plt.axis("off")
 plt.show()
@@ -31,44 +31,66 @@ plt.show()
 plt.imshow(mango)
 plt.axis("off")
 plt.show()
-
+'''
 
 # Question 4b: Creating Gaussian/Laplacian pyramids
 # Gaussian pyramid for the mango
 
-mango_residuals = []
-
-mango_copy = mango.copy()
-for i in range(4):
-    mango_residual = mango_copy - cv2.GaussianBlur(mango_copy, (5,5), 2)
-    mango_residuals.append(mango_residual)
-    x, y, _ = mango_copy.shape
-    mango_copy = cv2.resize(mango_copy, (y//2, x//2), fx=2, fy=2)
+def computeLaplacianPyramid(image, levels):
+    residuals = []
     
+    img_copy = image.copy()
+    
+    for level in range(levels):
+        '''
+        mango_residual = mango_copy - cv2.GaussianBlur(mango_copy, (5,5), 2)
+        mango_residuals.append(mango_residual)
+        x, y, _ = mango_copy.shape
+        mango_copy = cv2.resize(mango_copy, (y//2, x//2), fx=2, fy=2)
+        '''
+        blurred_image = cv2.GaussianBlur(img_copy, (5,5), 2)
+        x, y, _ = blurred_image.shape
+        downsample = cv2.resize(blurred_image, (y//2, x//2), fx=0.5, fy=0.5)
+        upsample = cv2.resize(downsample, (y, x), fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
+        residual = img_copy - cv2.GaussianBlur(upsample, (5,5), 2)
+        residuals.append(residual)
+        img_copy = downsample
+        print(level)
+    
+    return residuals, img_copy
 
-for mango_residual in mango_residuals:
-    plt.imshow(mango_residual)
+mango_residuals, downsample = computeLaplacianPyramid(mango, 4)
+'''
+print(len(mango_residuals))
+for residual in mango_residuals:
+    plt.imshow(residual)
     plt.axis("off")
     plt.show()
-    
-plt.imshow(mango_copy)
-
+'''   
+plt.imshow(downsample)
+plt.axis("off")
+plt.show()
 
 # Reconstructing the image from the Gaussian pyramids
 
-for i in range(4):
-    x, y,_ = mango_copy.shape
-    mango_copy = cv2.resize(mango_copy, (y*2, x*2), fx=2, fy=2)
-    mango_copy = cv2.GaussianBlur(mango_copy, (5,5), 2)
-    mango_copy = mango_copy + mango_residuals[3-i]
-    
-plt.imshow(mango_copy)
+def reconstructImage(residuals, downsample):
+    residuals.reverse()
+    for residual in residuals:
+        x, y,_ = downsample.shape
+        upsample = cv2.resize(downsample, (y*2, x*2), fx=2, fy=2)
+        upsample = cv2.GaussianBlur(upsample, (5,5), 2)
+        downsample = upsample + residual
+    return downsample
+
+mango_reconstruction = reconstructImage(mango_residuals, downsample)
+
+plt.imshow(mango_reconstruction)
 plt.axis("off")
 plt.show()
 
 strawberry_copy = strawberry.copy()
 
-
+'''
 # Question 4c : Creating mask for mango and strawberry
 
 # Creating a mango mask
@@ -143,7 +165,7 @@ plt.imshow(image_blend)
 plt.axis("off")
 plt.show()
 
-
+'''
 
 
 
