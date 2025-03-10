@@ -65,3 +65,32 @@ while cap.isOpened():
 cap.release()
 out.release()
 cv2.destroyAllWindows()
+
+# Matching outdoor scene
+outdoor_path = "Outdoor_Match.png"
+outdoor = cv2.imread(outdoor_path)
+
+outdoor = cv2.flip(outdoor, 0)
+print(outdoor.shape)
+outdoor_crop = outdoor[:,100:700]
+
+plt.imshow(outdoor_crop)
+plt.axis("off")
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
