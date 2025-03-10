@@ -37,6 +37,7 @@ def low_pass_filter_gray(image, radius):
                 
     # displaying the low pass filter
     plt.imshow(mask)
+    plt.axis("off")
     plt.show()
     
     # Tranforming image of horse1 to the frequency domain
@@ -47,6 +48,7 @@ def low_pass_filter_gray(image, radius):
     # Displaying magnitude spectrum
     magnitude_norm = 1000*np.log(magnitude)
     plt.imshow(magnitude_norm)
+    plt.axis("off")
     plt.show()
     
     # Applying the filter to the magnitude of shifted transform
@@ -54,6 +56,7 @@ def low_pass_filter_gray(image, radius):
     # Displaying low pass filtered magnitude spectrum
     lpf_magnitude_norm = magnitude_norm*mask
     plt.imshow(lpf_magnitude_norm)
+    plt.axis("off")
     plt.show()
     
     # converting filtered image to spatial domain
@@ -86,6 +89,7 @@ lpf_horse1 = low_pass_filter_rgb(horse1, 20)
 
 # Displaying low pass filtered rgb image
 plt.imshow(lpf_horse1)
+plt.axis("off")
 plt.show()
 
 
@@ -114,6 +118,7 @@ def high_pass_filter_gray(image, radius):
                 
     # displaying the low pass filter
     plt.imshow(mask)
+    plt.axis("off")
     plt.show()
     
     # Tranforming image of horse1 to the frequency domain
@@ -124,6 +129,7 @@ def high_pass_filter_gray(image, radius):
     # Displaying magnitude spectrum
     magnitude_norm = 1000*np.log(magnitude)
     plt.imshow(magnitude_norm)
+    plt.axis("off")
     plt.show()
     
     # Applying the filter to the magnitude of shifted transform
@@ -131,6 +137,7 @@ def high_pass_filter_gray(image, radius):
     # Displaying low pass filtered magnitude spectrum
     hpf_magnitude_norm = magnitude_norm*mask
     plt.imshow(hpf_magnitude_norm)
+    plt.axis("off")
     plt.show()
     
     # converting filtered image to spatial domain
@@ -163,6 +170,7 @@ hpf_horse2 = high_pass_filter_rgb(horse2, 20)
 
 # Displaying low pass filtered rgb image
 plt.imshow(hpf_horse2)
+plt.axis("off")
 plt.show()
 
 alpha = 0.5
@@ -170,4 +178,5 @@ alpha = 0.5
 horse12 = alpha*lpf_horse1 + (1-alpha)*hpf_horse2
 horse12 = (horse12).astype(np.uint8)
 plt.imshow(horse12)
+plt.axis("off")
 plt.show()

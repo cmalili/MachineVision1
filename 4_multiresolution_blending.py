@@ -90,8 +90,11 @@ plt.imshow(mango_reconstruction)
 plt.axis("off")
 plt.show()
 '''
-strawberry_copy = strawberry.copy()
+#strawberry_copy = strawberry.copy()
 
+mango_diff = np.abs(mango - mango_reconstruction)
+mango_diff = mango_diff.mean()
+print(f"mean mango difference: {mango_diff}")
 
 # Question 4c : Creating mask for mango and strawberry
 

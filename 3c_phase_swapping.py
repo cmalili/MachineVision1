@@ -32,6 +32,7 @@ def compute_dft_gray(img):
     dft = cv2.dft(np.float32(img), flags=cv2.DFT_COMPLEX_OUTPUT)
     dft_shifted = np.fft.fftshift(dft)
     magnitude, phase = cv2.cartToPolar(dft_shifted[:,:,0], dft_shifted[:,:,1])
+    phase = 0.97*phase
     return magnitude, phase
 
 
@@ -89,9 +90,10 @@ def compute_idft_rgb(magnitudes, phases):
 
 img = compute_idft_rgb(woman2_magnitude, woman1_phase)
 plt.imshow(img)
+plt.axis("off")
 plt.show()
 
 img = compute_idft_rgb(woman1_magnitude, woman2_phase)
 plt.imshow(img)
+plt.axis("off")
 plt.show()
-

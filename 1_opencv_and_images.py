@@ -38,7 +38,7 @@ print(w)
 
 scaled_down_h, scaled_down_w = h//10, w//10
 
-image_downsample = cv2.resize(image1, (0, 0), fx=scale_factor, fy=scale_factor)
+image_downsample = cv2.resize(image1, None, fx=0.1, fy=0.1)
 
 plt.imshow(image_downsample)
 plt.axis("off")
@@ -47,7 +47,7 @@ plt.show()
 
 # Question 1d: Upsampling the downsampled image by a factor of 10
 # Upsampling using nearest neighbor interpolation method
-image_upsample_nearest = cv2.resize(image_downsample, (w, h), fx=scale_factor, fy=scale_factor,
+image_upsample_nearest = cv2.resize(image_downsample, None, fx=10, fy=10,
                             interpolation=cv2.INTER_NEAREST)
 plt.imshow(image_upsample_nearest)
 plt.axis("off")
@@ -55,7 +55,7 @@ plt.show()
 
 
 # Upsampling using bicubic interpolation method
-image_upsample_cubic = cv2.resize(image_downsample, (w, h), fx=scale_factor, fy=scale_factor,
+image_upsample_cubic = cv2.resize(image_downsample, None, fx=10, fy=10,
                             interpolation=cv2.INTER_CUBIC)
 plt.imshow(image_upsample_cubic)
 plt.axis("off")
