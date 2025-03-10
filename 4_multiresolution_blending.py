@@ -171,7 +171,8 @@ for mango, strawberry, mask in zip(mango_residuals, strawberry_residuals, mask_p
 blended_image = reconstructImage(blended_residuals, blended_downsample)
 
 plt.imshow(blended_image)
-
+plt.axis("off")
+plt.show()
 
 
 
