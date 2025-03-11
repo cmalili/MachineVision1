@@ -217,7 +217,7 @@ plt.imshow(edges)
 plt.axis("off")
 plt.show()
 
-cv_edges = cv2.Canny(image, 50, 100)
+cv_edges = cv2.Canny(image, 25, 100)
 
 plt.imshow(cv_edges)
 plt.axis("off")
